@@ -173,50 +173,9 @@ button {
   line-height: 0.95;
 }
 
-.recent-pool {
-  padding: 78px 26px;
-}
-
 .apply-intro h1 {
   max-width: 900px;
   font-size: clamp(3.4rem, 8vw, 8.5rem);
-}
-
-.candidate-card {
-  min-height: 260px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 28px;
-  padding: 22px;
-  background: var(--paper);
-}
-
-.candidate-card h3,
-.candidate-card p {
-  margin: 0;
-}
-
-.candidate-card h3 {
-  margin-top: 12px;
-  font-family: "Newsreader", serif;
-  font-size: clamp(2rem, 3vw, 3.5rem);
-  font-weight: 300;
-  line-height: 0.95;
-}
-
-.candidate-card p,
-.candidate-card span,
-.candidate-card small {
-  color: var(--muted);
-  font-size: 0.78rem;
-  line-height: 1.55;
-}
-
-.candidate-card div > p {
-  color: var(--ink);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .site-footer {
@@ -301,15 +260,6 @@ button {
   line-height: 1.6;
 }
 
-.recent-pool {
-  grid-column: 1 / -1;
-  background: var(--bg);
-}
-
-.compact-grid .candidate-card {
-  min-height: 220px;
-}
-
 @media (max-width: 900px) {
   .how-section,
   .site-footer,
@@ -342,8 +292,7 @@ button {
 
   .home-hero,
   .apply-intro,
-  .resume-form,
-  .recent-pool {
+  .resume-form {
     padding-left: 20px;
     padding-right: 20px;
   }
