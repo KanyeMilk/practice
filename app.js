@@ -7,6 +7,7 @@ function App() {
         </a>
         <nav className="header-actions" aria-label="Main navigation">
           <a href="#how">How it works</a>
+          <a href="applicants.html">View Applicants</a>
           <a className="nav-pill" href="apply.html">Enter Pool</a>
         </nav>
       </header>
