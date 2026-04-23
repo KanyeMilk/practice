@@ -1,5 +1,15 @@
 const { useEffect, useState } = React;
 
+const GOOGLE_FORM_ACTION =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdGsGsOxo6INIev5YiYITlxpnIK9m0oox1sIT4T-oZcxHgeKg/formResponse";
+
+const GOOGLE_FORM_FIELDS = {
+  name: "entry.1467333147",
+  role: "entry.1305073458",
+  skills: "entry.1346102194",
+  resumeLink: "entry.1970411016",
+};
+
 const starterCandidates = [
   {
     id: 1,
@@ -7,7 +17,7 @@ const starterCandidates = [
     role: "Product Designer",
     location: "Los Angeles, CA",
     skills: "Figma, systems, research",
-    resumeName: "maya-chen-resume.pdf",
+    resumeLink: "maya-chen-resume.pdf",
   },
   {
     id: 2,
@@ -15,7 +25,7 @@ const starterCandidates = [
     role: "Frontend Engineer",
     location: "Austin, TX",
     skills: "React, TypeScript, accessibility",
-    resumeName: "andre-brooks-resume.pdf",
+    resumeLink: "andre-brooks-resume.pdf",
   },
   {
     id: 3,
@@ -23,7 +33,7 @@ const starterCandidates = [
     role: "Growth Marketer",
     location: "Remote",
     skills: "Lifecycle, analytics, paid social",
-    resumeName: "sam-rivera-resume.pdf",
+    resumeLink: "sam-rivera-resume.pdf",
   },
 ];
 
@@ -41,10 +51,10 @@ function ApplyApp() {
   const [form, setForm] = useState({
     name: "",
     role: "",
-    location: "",
     skills: "",
-    resumeName: "",
+    resumeLink: "",
   });
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     localStorage.setItem("effortlessCandidates", JSON.stringify(candidates));
@@ -54,26 +64,43 @@ function ApplyApp() {
     setForm((current) => ({ ...current, [field]: value }));
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+
+    const submission = new URLSearchParams();
+    submission.append(GOOGLE_FORM_FIELDS.name, form.name);
+    submission.append(GOOGLE_FORM_FIELDS.role, form.role);
+    submission.append(GOOGLE_FORM_FIELDS.skills, form.skills);
+    submission.append(GOOGLE_FORM_FIELDS.resumeLink, form.resumeLink);
+
+    setStatus("Submitting...");
+
+    await fetch(GOOGLE_FORM_ACTION, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: submission.toString(),
+    });
 
     const nextCandidate = {
       id: Date.now(),
       name: form.name || "Anonymous Candidate",
       role: form.role || "Open to opportunities",
-      location: form.location || "Location flexible",
+      location: "Submitted profile",
       skills: form.skills || "Skills pending",
-      resumeName: form.resumeName || "resume-uploaded.pdf",
+      resumeLink: form.resumeLink || "Resume link pending",
     };
 
     setCandidates((current) => [nextCandidate, ...current]);
     setForm({
       name: "",
       role: "",
-      location: "",
       skills: "",
-      resumeName: "",
+      resumeLink: "",
     });
+    setStatus("Added to the pool. Your profile was sent to the spreadsheet.");
   }
 
   return (
@@ -117,14 +144,6 @@ function ApplyApp() {
             />
           </label>
           <label>
-            Location
-            <input
-              value={form.location}
-              onChange={(event) => updateField("location", event.target.value)}
-              placeholder="New York, NY or Remote"
-            />
-          </label>
-          <label>
             Key skills
             <input
               value={form.skills}
@@ -133,16 +152,15 @@ function ApplyApp() {
             />
           </label>
           <label>
-            Resume upload
+            Resume link
             <input
-              type="file"
-              accept=".pdf,.doc,.docx"
-              onChange={(event) =>
-                updateField("resumeName", event.target.files[0]?.name || "")
-              }
+              value={form.resumeLink}
+              onChange={(event) => updateField("resumeLink", event.target.value)}
+              placeholder="https://drive.google.com/..."
             />
           </label>
           <button type="submit">Add to pool</button>
+          {status && <p className="form-status">{status}</p>}
         </form>
 
         <section className="recent-pool">
@@ -153,10 +171,10 @@ function ApplyApp() {
                 <div>
                   <p>{candidate.role}</p>
                   <h3>{candidate.name}</h3>
-                  <span>{candidate.location}</span>
+                  <span>{candidate.location || "Submitted profile"}</span>
                 </div>
                 <p>{candidate.skills}</p>
-                <small>{candidate.resumeName}</small>
+                <small>{candidate.resumeLink || candidate.resumeName}</small>
               </article>
             ))}
           </div>
