@@ -1,42 +1,4 @@
-const starterCandidates = [
-  {
-    id: 1,
-    name: "Maya Chen",
-    role: "Product Designer",
-    location: "Los Angeles, CA",
-    skills: "Figma, systems, research",
-    resumeName: "maya-chen-resume.pdf",
-  },
-  {
-    id: 2,
-    name: "Andre Brooks",
-    role: "Frontend Engineer",
-    location: "Austin, TX",
-    skills: "React, TypeScript, accessibility",
-    resumeName: "andre-brooks-resume.pdf",
-  },
-  {
-    id: 3,
-    name: "Sam Rivera",
-    role: "Growth Marketer",
-    location: "Remote",
-    skills: "Lifecycle, analytics, paid social",
-    resumeName: "sam-rivera-resume.pdf",
-  },
-];
-
-function loadCandidates() {
-  try {
-    const savedCandidates = localStorage.getItem("effortlessCandidates");
-    return savedCandidates ? JSON.parse(savedCandidates) : starterCandidates;
-  } catch {
-    return starterCandidates;
-  }
-}
-
 function App() {
-  const candidates = loadCandidates().slice(0, 3);
-
   return (
     <>
       <header className="site-header">
@@ -45,7 +7,6 @@ function App() {
         </a>
         <nav className="header-actions" aria-label="Main navigation">
           <a href="#how">How it works</a>
-          <a href="#talent">Talent</a>
           <a className="nav-pill" href="apply.html">Enter Pool</a>
         </nav>
       </header>
@@ -60,15 +21,7 @@ function App() {
           </p>
           <div className="hero-actions">
             <a href="apply.html">Enter the pool</a>
-            <a href="#talent">View talent</a>
           </div>
-        </section>
-
-        <section className="quiet-statement">
-          <span>For candidates</span>
-          <p>One clean profile instead of hundreds of cold applications.</p>
-          <span>For recruiters</span>
-          <p>A focused database of people who already want to be discovered.</p>
         </section>
 
         <section className="how-section" id="how">
@@ -87,26 +40,6 @@ function App() {
             <h2>Get selected.</h2>
             <p>Recruiters shortlist people intentionally before starting outreach.</p>
           </article>
-        </section>
-
-        <section className="talent-section" id="talent">
-          <div className="section-heading">
-            <p className="kicker">Recruiter preview</p>
-            <h2>Candidate pool</h2>
-          </div>
-          <div className="candidate-grid">
-            {candidates.map((candidate) => (
-              <article className="candidate-card" key={candidate.id}>
-                <div>
-                  <p>{candidate.role}</p>
-                  <h3>{candidate.name}</h3>
-                  <span>{candidate.location}</span>
-                </div>
-                <p>{candidate.skills}</p>
-                <small>{candidate.resumeName}</small>
-              </article>
-            ))}
-          </div>
         </section>
       </main>
 
