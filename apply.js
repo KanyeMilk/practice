@@ -1,14 +1,7 @@
 const { useEffect, useState } = React;
 
-const GOOGLE_FORM_ACTION =
-  "https://docs.google.com/forms/d/e/1FAIpQLSdGsGsOxo6INIev5YiYITlxpnIK9m0oox1sIT4T-oZcxHgeKg/formResponse";
-
-const GOOGLE_FORM_FIELDS = {
-  name: "entry.1467333147",
-  role: "entry.1305073458",
-  skills: "entry.1346102194",
-  resumeLink: "entry.1970411016",
-};
+const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwPtqHjrERNrxXzZVcS7_FPVKasvTkZXBSLuibkTiAgHx_ceSXv1MVBjJhUPFxBtu4lrw/exec";
 
 const starterCandidates = [
   {
@@ -17,7 +10,8 @@ const starterCandidates = [
     role: "Product Designer",
     location: "Los Angeles, CA",
     skills: "Figma, systems, research",
-    resumeLink: "maya-chen-resume.pdf",
+    zipCode: "90012",
+    resumeName: "maya-chen-resume.pdf",
   },
   {
     id: 2,
@@ -25,7 +19,8 @@ const starterCandidates = [
     role: "Frontend Engineer",
     location: "Austin, TX",
     skills: "React, TypeScript, accessibility",
-    resumeLink: "andre-brooks-resume.pdf",
+    zipCode: "78701",
+    resumeName: "andre-brooks-resume.pdf",
   },
   {
     id: 3,
@@ -33,7 +28,8 @@ const starterCandidates = [
     role: "Growth Marketer",
     location: "Remote",
     skills: "Lifecycle, analytics, paid social",
-    resumeLink: "sam-rivera-resume.pdf",
+    zipCode: "Remote",
+    resumeName: "sam-rivera-resume.pdf",
   },
 ];
 
@@ -52,7 +48,8 @@ function ApplyApp() {
     name: "",
     role: "",
     skills: "",
-    resumeLink: "",
+    zipCode: "",
+    resumeFile: null,
   });
   const [status, setStatus] = useState("");
 
@@ -64,43 +61,68 @@ function ApplyApp() {
     setForm((current) => ({ ...current, [field]: value }));
   }
 
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
 
-    const submission = new URLSearchParams();
-    submission.append(GOOGLE_FORM_FIELDS.name, form.name);
-    submission.append(GOOGLE_FORM_FIELDS.role, form.role);
-    submission.append(GOOGLE_FORM_FIELDS.skills, form.skills);
-    submission.append(GOOGLE_FORM_FIELDS.resumeLink, form.resumeLink);
+    if (!form.resumeFile) {
+      setStatus("Please attach your resume before submitting.");
+      return;
+    }
 
-    setStatus("Submitting...");
+    setStatus("Uploading resume...");
 
-    await fetch(GOOGLE_FORM_ACTION, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: submission.toString(),
-    });
+    try {
+      const fileBase64 = await fileToBase64(form.resumeFile);
 
-    const nextCandidate = {
-      id: Date.now(),
-      name: form.name || "Anonymous Candidate",
-      role: form.role || "Open to opportunities",
-      location: "Submitted profile",
-      skills: form.skills || "Skills pending",
-      resumeLink: form.resumeLink || "Resume link pending",
-    };
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          role: form.role,
+          skills: form.skills,
+          zipCode: form.zipCode,
+          fileName: form.resumeFile.name,
+          fileType: form.resumeFile.type || "application/octet-stream",
+          fileBase64,
+        }),
+      });
 
-    setCandidates((current) => [nextCandidate, ...current]);
-    setForm({
-      name: "",
-      role: "",
-      skills: "",
-      resumeLink: "",
-    });
-    setStatus("Added to the pool. Your profile was sent to the spreadsheet.");
+      const nextCandidate = {
+        id: Date.now(),
+        name: form.name || "Anonymous Candidate",
+        role: form.role || "Open to opportunities",
+        location: form.zipCode || "Zip code pending",
+        skills: form.skills || "Skills pending",
+        zipCode: form.zipCode || "Pending",
+        resumeName: form.resumeFile.name,
+      };
+
+      setCandidates((current) => [nextCandidate, ...current]);
+      setForm({
+        name: "",
+        role: "",
+        skills: "",
+        zipCode: "",
+        resumeFile: null,
+      });
+      event.target.reset();
+      setStatus("Added to the pool. Your resume was uploaded.");
+    } catch {
+      setStatus("Something went wrong. Please try again.");
+    }
   }
 
   return (
@@ -152,11 +174,22 @@ function ApplyApp() {
             />
           </label>
           <label>
-            Resume link
+            Zip code
             <input
-              value={form.resumeLink}
-              onChange={(event) => updateField("resumeLink", event.target.value)}
-              placeholder="https://drive.google.com/..."
+              value={form.zipCode}
+              onChange={(event) => updateField("zipCode", event.target.value)}
+              placeholder="90210"
+              inputMode="numeric"
+            />
+          </label>
+          <label>
+            Resume file
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(event) =>
+                updateField("resumeFile", event.target.files[0] || null)
+              }
             />
           </label>
           <button type="submit">Add to pool</button>
@@ -171,10 +204,10 @@ function ApplyApp() {
                 <div>
                   <p>{candidate.role}</p>
                   <h3>{candidate.name}</h3>
-                  <span>{candidate.location || "Submitted profile"}</span>
+                  <span>Zip {candidate.zipCode || candidate.location || "pending"}</span>
                 </div>
                 <p>{candidate.skills}</p>
-                <small>{candidate.resumeLink || candidate.resumeName}</small>
+                <small>{candidate.resumeName}</small>
               </article>
             ))}
           </div>
