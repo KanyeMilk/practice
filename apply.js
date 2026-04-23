@@ -7,6 +7,8 @@ function ApplyApp() {
   const [form, setForm] = useState({
     name: "",
     role: "",
+    email: "",
+    phone: "",
     skills: "",
     zipCode: "",
     resumeFile: null,
@@ -48,6 +50,8 @@ function ApplyApp() {
         body: JSON.stringify({
           name: form.name,
           role: form.role,
+          email: form.email,
+          phone: form.phone,
           skills: form.skills,
           zipCode: form.zipCode,
           fileName: form.resumeFile.name,
@@ -59,6 +63,8 @@ function ApplyApp() {
       setForm({
         name: "",
         role: "",
+        email: "",
+        phone: "",
         skills: "",
         zipCode: "",
         resumeFile: null,
@@ -108,6 +114,27 @@ function ApplyApp() {
               value={form.role}
               onChange={(event) => updateField("role", event.target.value)}
               placeholder="Operations Manager"
+              autoComplete="organization-title"
+            />
+          </label>
+          <label>
+            Email
+            <input
+              type="email"
+              value={form.email}
+              onChange={(event) => updateField("email", event.target.value)}
+              placeholder="jordan@email.com"
+              autoComplete="email"
+            />
+          </label>
+          <label>
+            Phone number
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={(event) => updateField("phone", event.target.value)}
+              placeholder="(555) 123-4567"
+              autoComplete="tel"
             />
           </label>
           <label>
@@ -127,7 +154,7 @@ function ApplyApp() {
               inputMode="numeric"
             />
           </label>
-          <label>
+          <label className="is-full">
             Resume file
             <input
               type="file"
