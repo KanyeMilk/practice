@@ -78,7 +78,7 @@ function ApplyApp() {
         </a>
         <nav className="header-actions" aria-label="Main navigation">
           <a href="index.html#how">How it works</a>
-          <a className="nav-pill" href="applicants.html">View Applicants</a>
+          <a href="applicants.html">View Applicants</a>
           <a className="nav-pill is-active" href="apply.html">Enter Pool</a>
         </nav>
       </header>
