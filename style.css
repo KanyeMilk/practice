@@ -228,7 +228,7 @@ button {
   text-transform: uppercase;
 }
 
-.resume-form label:nth-child(5),
+.resume-form label.is-full,
 .resume-form button {
   grid-column: 1 / -1;
 }
