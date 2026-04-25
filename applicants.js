@@ -8,7 +8,6 @@ function ApplicantsApp() {
     fullName: "",
     businessEmail: "",
     companyName: "",
-    companyWebsite: "",
     hiringNeeds: "",
   });
   const [status, setStatus] = useState("");
@@ -33,7 +32,6 @@ function ApplicantsApp() {
           fullName: form.fullName,
           businessEmail: form.businessEmail,
           companyName: form.companyName,
-          companyWebsite: form.companyWebsite,
           hiringNeeds: form.hiringNeeds,
         }),
       });
@@ -42,7 +40,6 @@ function ApplicantsApp() {
         fullName: "",
         businessEmail: "",
         companyName: "",
-        companyWebsite: "",
         hiringNeeds: "",
       });
       event.target.reset();
@@ -106,17 +103,6 @@ function ApplicantsApp() {
                 updateField("companyName", event.target.value)
               }
               placeholder="Northstar Talent"
-            />
-          </label>
-          <label>
-            Company website
-            <input
-              type="url"
-              value={form.companyWebsite}
-              onChange={(event) =>
-                updateField("companyWebsite", event.target.value)
-              }
-              placeholder="https://company.com"
             />
           </label>
           <label className="is-full">
