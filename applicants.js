@@ -1,4 +1,57 @@
+const { useState } = React;
+
+const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwPtqHjrERNrxXzZVcS7_FPVKasvTkZXBSLuibkTiAgHx_ceSXv1MVBjJhUPFxBtu4lrw/exec";
+
 function ApplicantsApp() {
+  const [form, setForm] = useState({
+    fullName: "",
+    businessEmail: "",
+    companyName: "",
+    companyWebsite: "",
+    hiringNeeds: "",
+  });
+  const [status, setStatus] = useState("");
+
+  function updateField(field, value) {
+    setForm((current) => ({ ...current, [field]: value }));
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setStatus("Sending request...");
+
+    try {
+      await fetch(APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8",
+        },
+        body: JSON.stringify({
+          requestType: "recruiter_access",
+          fullName: form.fullName,
+          businessEmail: form.businessEmail,
+          companyName: form.companyName,
+          companyWebsite: form.companyWebsite,
+          hiringNeeds: form.hiringNeeds,
+        }),
+      });
+
+      setForm({
+        fullName: "",
+        businessEmail: "",
+        companyName: "",
+        companyWebsite: "",
+        hiringNeeds: "",
+      });
+      event.target.reset();
+      setStatus("Request sent. We will review your business and follow up by email.");
+    } catch {
+      setStatus("Something went wrong. Please try again.");
+    }
+  }
+
   return (
     <>
       <header className="site-header">
@@ -12,20 +65,78 @@ function ApplicantsApp() {
         </nav>
       </header>
 
-      <main className="applicants-page">
+      <main className="access-request">
         <section className="applicants-intro">
           <p className="kicker">Recruiter access</p>
-          <h1>Applicant review is coming soon.</h1>
+          <h1>Request access to the applicant pool.</h1>
           <p>
-            This area will become a more intentional recruiter workflow later:
-            login, filtering, candidate review, and controlled resume access.
-            For now, applicant data stays out of the public website view.
+            Applicant review stays private. Submit your business details below
+            and Effortless will verify your company before sending an access
+            invite by email.
           </p>
-          <div className="hero-actions">
-            <a href="apply.html">Enter the pool</a>
-            <a href="index.html">Return home</a>
-          </div>
         </section>
+
+        <form className="request-form" onSubmit={handleSubmit}>
+          <label>
+            Full name
+            <input
+              value={form.fullName}
+              onChange={(event) => updateField("fullName", event.target.value)}
+              placeholder="Jordan Lee"
+              autoComplete="name"
+            />
+          </label>
+          <label>
+            Business email
+            <input
+              type="email"
+              value={form.businessEmail}
+              onChange={(event) =>
+                updateField("businessEmail", event.target.value)
+              }
+              placeholder="jordan@company.com"
+              autoComplete="email"
+            />
+          </label>
+          <label>
+            Company name
+            <input
+              value={form.companyName}
+              onChange={(event) =>
+                updateField("companyName", event.target.value)
+              }
+              placeholder="Northstar Talent"
+            />
+          </label>
+          <label>
+            Company website
+            <input
+              type="url"
+              value={form.companyWebsite}
+              onChange={(event) =>
+                updateField("companyWebsite", event.target.value)
+              }
+              placeholder="https://company.com"
+            />
+          </label>
+          <label className="is-full">
+            What roles are you hiring for?
+            <textarea
+              rows="4"
+              value={form.hiringNeeds}
+              onChange={(event) =>
+                updateField("hiringNeeds", event.target.value)
+              }
+              placeholder="Growth marketing, operations, product, early career hires..."
+            />
+          </label>
+          <button type="submit">Request access</button>
+          {status && <p className="form-status">{status}</p>}
+          <p className="request-note">
+            Access is reviewed manually. Businesses will only receive an invite
+            after verification.
+          </p>
+        </form>
       </main>
     </>
   );
