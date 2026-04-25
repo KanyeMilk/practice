@@ -24,7 +24,8 @@ body {
 
 a,
 button,
-input {
+input,
+textarea {
   color: inherit;
   font: inherit;
 }
@@ -83,7 +84,8 @@ button {
 }
 
 .home-hero,
-.apply-intro {
+.apply-intro,
+.applicants-intro {
   min-height: calc(100vh - 82px);
   display: flex;
   flex-direction: column;
@@ -105,6 +107,7 @@ button {
 
 .home-hero h1,
 .apply-intro h1,
+.applicants-intro h1,
 .site-footer h2 {
   margin: 0;
   font-family: "Newsreader", serif;
@@ -120,6 +123,7 @@ button {
 
 .home-hero p,
 .apply-intro p,
+.applicants-intro p,
 .how-section p,
 .site-footer p {
   max-width: 620px;
@@ -139,7 +143,8 @@ button {
 }
 
 .hero-actions a,
-.resume-form button {
+.resume-form button,
+.request-form button {
   border-bottom: 1px solid currentColor;
 }
 
@@ -206,8 +211,18 @@ button {
   background: var(--line);
 }
 
+.access-request {
+  display: grid;
+  grid-template-columns: 0.88fr 1.12fr;
+  gap: 1px;
+  min-height: calc(100vh - 82px);
+  background: var(--line);
+}
+
 .apply-intro,
-.resume-form {
+.resume-form,
+.request-form,
+.applicants-intro {
   background: var(--bg);
 }
 
@@ -219,7 +234,16 @@ button {
   padding: 56px 42px;
 }
 
-.resume-form label {
+.request-form {
+  display: grid;
+  align-content: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  padding: 56px 42px;
+}
+
+.resume-form label,
+.request-form label {
   display: grid;
   gap: 10px;
   color: var(--muted);
@@ -229,11 +253,19 @@ button {
 }
 
 .resume-form label.is-full,
+.request-form label.is-full,
 .resume-form button {
   grid-column: 1 / -1;
 }
 
-.resume-form input {
+.request-form button,
+.request-note {
+  grid-column: 1 / -1;
+}
+
+.resume-form input,
+.request-form input,
+.request-form textarea {
   width: 100%;
   border: 0;
   border-bottom: 1px solid currentColor;
@@ -243,7 +275,14 @@ button {
   text-transform: none;
 }
 
-.resume-form input:focus {
+.request-form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.resume-form input:focus,
+.request-form input:focus,
+.request-form textarea:focus {
   outline: none;
 }
 
@@ -252,8 +291,20 @@ button {
   padding: 0 0 4px;
 }
 
+.request-form button {
+  justify-self: start;
+  padding: 0 0 4px;
+}
+
 .form-status {
   grid-column: 1 / -1;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.request-note {
   margin: 0;
   color: var(--muted);
   font-size: 0.82rem;
@@ -329,7 +380,8 @@ button {
 @media (max-width: 900px) {
   .how-section,
   .site-footer,
-  .apply-page {
+  .apply-page,
+  .access-request {
     grid-template-columns: 1fr;
   }
 
@@ -338,7 +390,8 @@ button {
     border-bottom: 1px solid var(--line);
   }
 
-  .resume-form {
+  .resume-form,
+  .request-form {
     grid-template-columns: 1fr;
   }
 
@@ -366,7 +419,9 @@ button {
 
   .home-hero,
   .apply-intro,
-  .resume-form {
+  .resume-form,
+  .request-form,
+  .applicants-intro {
     padding-left: 20px;
     padding-right: 20px;
   }
