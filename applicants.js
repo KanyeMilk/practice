@@ -8,7 +8,6 @@ function ApplicantsApp() {
     fullName: "",
     businessEmail: "",
     companyName: "",
-    hiringNeeds: "",
   });
   const [status, setStatus] = useState("");
 
@@ -32,7 +31,6 @@ function ApplicantsApp() {
           fullName: form.fullName,
           businessEmail: form.businessEmail,
           companyName: form.companyName,
-          hiringNeeds: form.hiringNeeds,
         }),
       });
 
@@ -40,7 +38,6 @@ function ApplicantsApp() {
         fullName: "",
         businessEmail: "",
         companyName: "",
-        hiringNeeds: "",
       });
       event.target.reset();
       setStatus("Request sent. We will review your business and follow up by email.");
@@ -103,17 +100,6 @@ function ApplicantsApp() {
                 updateField("companyName", event.target.value)
               }
               placeholder="Northstar Talent"
-            />
-          </label>
-          <label className="is-full">
-            What roles are you hiring for?
-            <textarea
-              rows="4"
-              value={form.hiringNeeds}
-              onChange={(event) =>
-                updateField("hiringNeeds", event.target.value)
-              }
-              placeholder="Growth marketing, operations, product, early career hires..."
             />
           </label>
           <button type="submit">Request access</button>
